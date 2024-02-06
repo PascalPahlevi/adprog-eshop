@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
+
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/product")
@@ -25,6 +28,7 @@ public class ProductController {
 
     @PostMapping("/create")
     public String createProductPost(@ModelAttribute Product product, Model model) {
+        product.setProductId(UUID.randomUUID().toString());
         service.create(product);
         return "redirect:list";
     }
@@ -34,5 +38,29 @@ public class ProductController {
         List<Product> allProducts = service.findAll();
         model.addAttribute("products", allProducts);
         return "productList";
+    }
+
+    @GetMapping("/edit/{productId}")
+    public String editProductPage(@PathVariable String productId, Model model) {
+        if (StringUtils.hasText(productId)) {
+            Product product = service.findById(productId);
+            model.addAttribute("product", product);
+            return "editProduct";
+        } else {
+
+            return "redirect:list";
+        }
+    }
+
+    @PostMapping("/edit")
+    public String editProductPost(@ModelAttribute Product product) {
+        service.update(product);
+        return "redirect:list";
+    }
+
+    @GetMapping("/delete")
+    public String deleteProduct(@RequestParam String productId) {
+        service.delete(productId); // Assuming you have a delete method in your ProductService
+        return "redirect:list";
     }
 }

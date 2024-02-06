@@ -57,4 +57,10 @@ public class ProductController {
         service.update(product);
         return "redirect:list";
     }
+
+    @GetMapping("/delete")
+    public String deleteProduct(@RequestParam String productId) {
+        service.delete(productId); // Assuming you have a delete method in your ProductService
+        return "redirect:list";
+    }
 }

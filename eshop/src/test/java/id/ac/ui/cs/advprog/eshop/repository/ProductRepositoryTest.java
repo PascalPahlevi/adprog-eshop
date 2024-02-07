@@ -147,6 +147,51 @@ class ProductRepositoryTest {
 
         Iterator<Product> productIterator = productRepository.findAll();
         assertFalse(productIterator.hasNext());
+    }
 
+    @Test
+    void testDeleteWithMultipleProducts() {
+        Product product1 = new Product();
+        product1.setProductId("a0f9de46-90b1-437d-a0bf-d0821dde9096");
+        product1.setProductName("Sampo Cap Usep");
+        product1.setProductQuantity(100);
+        productRepository.create(product1);
+
+        Product product2 = new Product();
+        product2.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product2.setProductName("Playstation 5");
+        product2.setProductQuantity(30);
+        productRepository.create(product2);
+
+        Product product3 = new Product();
+        product3.setProductId("a1f8e34-2bc5-547f-82de54fb4f75");
+        product3.setProductName("Metaquest 3");
+        product3.setProductQuantity(23);
+        productRepository.create(product3);
+
+        Product product4 = new Product();
+        product4.setProductId(product2.getProductId());
+        product4.setProductName("Apple Vision Pro");
+        product4.setProductQuantity(999);
+        productRepository.create(product4);
+
+        productRepository.delete(product1);
+        productRepository.delete(product3);
+        Iterator<Product> productIterator = productRepository.findAll();
+
+        assertTrue(productIterator.hasNext());
+        Product savedProduct = productIterator.next();
+
+        assertEquals(product2.getProductId(), savedProduct.getProductId());
+        assertEquals(product2.getProductName(), savedProduct.getProductName());
+        assertEquals(product2.getProductQuantity(), savedProduct.getProductQuantity());
+
+        assertTrue(productIterator.hasNext());
+        savedProduct = productIterator.next();
+        assertEquals(product4.getProductId(), savedProduct.getProductId());
+        assertEquals(product4.getProductName(), savedProduct.getProductName());
+        assertEquals(product4.getProductQuantity(), savedProduct.getProductQuantity());
+
+        assertFalse(productIterator.hasNext());
     }
 }

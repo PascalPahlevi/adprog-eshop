@@ -47,7 +47,6 @@ public class ProductController {
             model.addAttribute("product", product);
             return "editProduct";
         } else {
-
             return "redirect:list";
         }
     }
@@ -59,8 +58,8 @@ public class ProductController {
     }
 
     @GetMapping("/delete")
-    public String deleteProduct(@RequestParam String productId) {
-        service.delete(productId); // Assuming you have a delete method in your ProductService
+    public String deleteProduct(@RequestParam Product product) {
+        service.delete(product);
         return "redirect:list";
     }
 }
